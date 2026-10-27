@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estratégia de Experimentação | Jornada digital de clientes novos (versão enxuta)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --hdr:#1E1D2B; --hdr-ink:#FFFFFF; --hdr-soft:#B9B8C6; --strip:#1F3A5F; --strip-ink:#E6ECF5;
+  --bg:#F4F4F5; --card:#FFFFFF; --ink:#1E1D2B; --muted:#6E6D7A; --line:#E7E7EC;
+  --orange:#FF6B35; --orange-bg:#FFF1EA; --green:#22863A; --green-bg:#EAF6EC; --blue:#1F3A5F; --blue-bg:#EAF0F7;
+  --bar:#FF6B35; --bar2:#D6D6DD;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --hdr:#0E0E16; --strip:#15283F; --bg:#121218; --card:#1C1C26; --ink:#EDEDF2; --muted:#A3A2B0; --line:#2D2D3A;
+    --orange-bg:#3A2219; --green:#5CC774; --green-bg:#173322; --blue:#8FB3E0; --blue-bg:#1A2636; --bar2:#3A3A48;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --hdr:#0E0E16; --strip:#15283F; --bg:#121218; --card:#1C1C26; --ink:#EDEDF2; --muted:#A3A2B0; --line:#2D2D3A;
+  --orange-bg:#3A2219; --green:#5CC774; --green-bg:#173322; --blue:#8FB3E0; --blue-bg:#1A2636; --bar2:#3A3A48;
+  color-scheme:dark;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:16px;line-height:1.5}
+header.top{background:var(--hdr);color:var(--hdr-ink);padding:18px 32px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;gap:12px;align-items:flex-start}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--orange);margin-top:9px;flex:none}
+.brand h1{margin:0;font-size:24px;font-weight:800;line-height:1.3}
+.brand p{margin:2px 0 0;color:var(--hdr-soft);font-size:17px}
+.upd{color:var(--hdr-soft);font-size:15px}
+.strip{background:var(--strip);color:var(--strip-ink);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;padding:7px 32px;overflow-x:auto;white-space:nowrap}
+main{max-width:1320px;margin:0 auto;padding:24px 32px 64px}
+.pills{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0 22px}
+.pills .lbl{font-weight:600;color:var(--muted);margin-right:4px}
+.pill{font:inherit;font-size:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 16px;cursor:pointer}
+.pill[aria-selected="true"]{background:var(--hdr);color:#fff;border-color:var(--hdr);font-weight:700}
+:root[data-theme="dark"] .pill[aria-selected="true"]{background:var(--orange);border-color:var(--orange)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pill[aria-selected="true"]{background:var(--orange);border-color:var(--orange)}}
+.pill:focus-visible,.next:focus-visible,a:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.card{background:var(--card);border-radius:12px;padding:22px 26px;margin-bottom:20px;box-shadow:0 1px 2px rgba(20,20,40,.06)}
+.card h3{margin:0 0 14px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.card h4{margin:0 0 10px;font-size:17px;font-weight:800}
+.hl{list-style:none;margin:0;padding:0}
+.hl li{display:flex;gap:12px;align-items:flex-start;margin:0 0 10px;font-size:17px}
+.hl li .ic{flex:none;width:22px;text-align:center}
+.hl .ok{color:var(--green)}.hl .warn{color:var(--orange)}.hl .info{color:var(--blue)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-bottom:20px}
+.kpi{background:var(--card);border-radius:12px;padding:20px 24px;box-shadow:0 1px 2px rgba(20,20,40,.06)}
+.kpi .k{font-size:13.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.kpi .v{font-size:34px;font-weight:800;margin:6px 0 2px;line-height:1.15}
+.kpi .v.o{color:var(--orange)}
+.kpi .s{font-size:14.5px;color:var(--muted)}
+.prog-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px}
+.prog-h b{font-size:17px}
+.prog-h .pct{font-size:26px;font-weight:800;color:var(--orange)}
+.track{height:14px;background:var(--bar2);border-radius:999px;overflow:hidden}
+.fill{height:100%;background:var(--bar);border-radius:999px}
+.legend{display:flex;gap:22px;flex-wrap:wrap;margin-top:10px;font-size:14.5px;color:var(--muted)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th{text-align:left;font-weight:700;color:var(--muted);font-size:13px;letter-spacing:.04em;text-transform:uppercase;border-bottom:2px solid var(--line);padding:8px 12px 8px 0}
+td{border-bottom:1px solid var(--line);padding:9px 12px 9px 0;vertical-align:top}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.on td{background:var(--orange-bg)}
+.bars{display:flex;flex-direction:column;gap:10px}
+.br{display:grid;grid-template-columns:minmax(120px,190px) 1fr 58px;gap:12px;align-items:center;font-size:15px}
+.br .t{height:18px;background:var(--bar2);border-radius:999px;overflow:hidden}
+.br .t span{display:block;height:100%;background:var(--bar);border-radius:999px}
+.br .t span.g{background:var(--muted)}
+.br .t span.gr{background:var(--green)}
+.br b{text-align:right;font-variant-numeric:tabular-nums}
+.funnel .br{grid-template-columns:minmax(150px,230px) 1fr 150px}
+.funnel .br .t{height:30px;border-radius:6px}
+.funnel .br .t span{border-radius:6px;display:flex;align-items:center;padding-left:10px;color:#fff;font-weight:800;font-size:15px}
+.funnel .br .t span.g{background:var(--blue)}
+.funnel .br small{color:var(--muted);text-align:left}
+.callout{border-left:4px solid var(--orange);background:var(--orange-bg);padding:12px 16px;border-radius:0 8px 8px 0;font-size:15.5px;margin-top:14px}
+.callout.g{border-color:var(--green);background:var(--green-bg)}
+.callout.b{border-color:var(--blue);background:var(--blue-bg)}
+.tag{display:inline-block;font-size:12.5px;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--green-bg);color:var(--green);white-space:nowrap}
+.tag.o{background:var(--orange-bg);color:var(--orange);box-shadow:inset 0 0 0 1px var(--orange)}
+.tag.b{background:var(--blue-bg);color:var(--blue)}
+.check{list-style:none;margin:0;padding:0;columns:2;column-gap:32px}
+.check li{break-inside:avoid;margin:0 0 10px;padding-left:28px;position:relative;font-size:15.5px}
+.check li::before{content:"✓";position:absolute;left:0;top:0;color:var(--green);font-weight:800}
+.check a{color:var(--blue);font-weight:700;text-decoration:none;border-bottom:1px dotted currentColor;cursor:pointer}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:4px 0 6px}
+.flow div{border-top:4px solid var(--orange);padding:10px 14px 0 0}
+.flow b{display:block;font-size:16px}
+.flow span{font-size:14.5px;color:var(--muted)}
+.msgs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.msg{border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15px}
+.msg .c{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+.msg.wa{background:var(--green-bg);border-color:transparent;border-radius:14px 14px 14px 4px}
+.msg .btn{display:inline-block;margin:8px 6px 0 0;border:1px solid var(--blue);color:var(--blue);border-radius:999px;padding:2px 12px;font-size:13.5px;font-weight:700}
+.hx{display:grid;grid-template-columns:minmax(0,1fr) 32px minmax(0,1fr) 32px minmax(0,1fr);gap:0;align-items:stretch;border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden}
+.hx > div{padding:14px 18px}
+.hx .hy{background:var(--blue-bg)}
+.hx .ar{display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:var(--orange);background:var(--card)}
+.hx .ac{background:var(--orange-bg)}
+.hx .ms{background:var(--green-bg)}
+.hx ul{margin:0;padding-left:18px;font-size:14.5px}.hx li{margin-bottom:4px}
+.hx .lb{font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.hx p{margin:0 0 6px;font-size:15.5px}
+.hx .meta{grid-column:1/-1;background:var(--card);border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px 22px;font-size:14px;color:var(--muted);padding:10px 18px}
+.hx .meta b{color:var(--ink)}
+@media (max-width:900px){.hx{grid-template-columns:minmax(0,1fr)}.hx .ar{transform:rotate(90deg);padding:4px}}
+.dec td:first-child{font-weight:700;white-space:nowrap}
+.foot-nav{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:12px;flex-wrap:wrap}
+.next{font:inherit;font-weight:700;background:var(--orange);color:#fff;border:0;border-radius:999px;padding:10px 20px;cursor:pointer}
+.next.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.chap{display:none}.chap.show{display:block}
+.small{font-size:14px;color:var(--muted)}
+p{margin:0 0 10px}
+ul.plain{margin:0;padding-left:20px}ul.plain li{margin-bottom:6px}
+@media (max-width:900px){
+  header.top,main{padding-left:16px;padding-right:16px}.strip{padding-left:16px}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.kpi{padding:16px}.kpi .v{font-size:26px}.grid2,.grid3,.msgs{grid-template-columns:minmax(0,1fr)!important}.check{columns:1}
+  .flow{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .funnel .br{grid-template-columns:120px 1fr 90px}
+}
+@media print{.pills,.foot-nav{display:none}.chap{display:block!important;page-break-after:always}}
+
+details.ap{background:var(--card);border-radius:12px;margin-bottom:14px;box-shadow:0 1px 2px rgba(20,20,40,.06)}
+details.ap summary{cursor:pointer;padding:16px 22px;font-weight:800;font-size:15px;letter-spacing:.04em;text-transform:uppercase;list-style:none}
+details.ap summary::-webkit-details-marker{display:none}
+details.ap summary::before{content:"+";display:inline-block;width:20px;color:var(--orange)}
+details.ap[open] summary::before{content:"–"}
+details.ap .in{padding:0 22px 20px}
+.big1{font-size:22px;font-weight:800;line-height:1.35;max-width:62ch;margin:0 0 6px}
+.find{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-bottom:20px}
+.find .card{margin:0}
+.find .n{font-size:40px;font-weight:800;color:var(--orange);line-height:1.1}
+.prem{font-size:12px;font-weight:700;color:var(--muted);border:1px dashed var(--muted);border-radius:999px;padding:1px 8px;margin-left:6px;white-space:nowrap}
+@media (max-width:900px){.find{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="dot" aria-hidden="true"></span><div><h1>Estratégia de Experimentação</h1><p>Jornada digital de clientes novos · Case</p></div></div>
+  <div class="upd">Base até 01/08/2026 · Gabriela Macedo</div>
+</header>
+<div class="strip">Aba: [Base_Dados] | Rows: 3.600 | Onboarding: mar–jul/2026 | Fora dos públicos de teste: 86 | Todos os números vêm da base; premissas sinalizadas</div>
+
+<main>
+  <nav class="pills" role="tablist" aria-label="Capítulos">
+    <span class="lbl">Capítulo:</span>
+    <button class="pill" role="tab" data-t="diagnostico">1. Diagnóstico</button>
+    <button class="pill" role="tab" data-t="foco">2. Onde atacar</button>
+    <button class="pill" role="tab" data-t="hipoteses">3. Hipóteses</button>
+    <button class="pill" role="tab" data-t="experimento">4. Experimento da H1</button>
+    <button class="pill" role="tab" data-t="comunicacao">5. Leitura da comunicação</button>
+    <button class="pill" role="tab" data-t="decisao">6. Decisão e escala</button>
+    <button class="pill" role="tab" data-t="apendice">Apêndice</button>
+  </nav>
+
+  <!-- 1 DIAGNÓSTICO -->
+  <section class="chap" id="diagnostico" role="tabpanel">
+    <div class="card">
+      <p class="big1">Quase metade dos clientes novos não faz login na primeira semana. Quem não faz tem quase metade dos produtos de quem faz.</p>
+      <p class="small">Base validada: 3.600 clientes, IDs únicos, soma de produtos correta. Três ressalvas: 86 registros de acesso inconsistente ficam fora do teste; a etapa da jornada não bate com o comportamento; a data de contratação não mostra o tempo até contratar. “Primeiros dias” = D0 a D7 (premissa). <a data-go="apendice" style="color:var(--blue);font-weight:700;cursor:pointer">Detalhe no apêndice</a></p>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="k">Taxa de ativação</div><div class="v o">55,7%</div><div class="s">login de D0 a D7</div></div>
+      <div class="kpi"><div class="k">Não ativados</div><div class="v">1.593</div><div class="s">44% dos 3.600 clientes</div></div>
+      <div class="kpi"><div class="k">Produtos/cliente</div><div class="v">1,48 <span style="font-size:20px;color:var(--muted)">vs 0,79</span></div><div class="s">ativado vs não ativado</div></div>
+      <div class="kpi"><div class="k">2+ produtos</div><div class="v">49% <span style="font-size:20px;color:var(--muted)">vs 16%</span></div><div class="s">ativado vs não ativado</div></div>
+    </div>
+    <h3 style="font-size:15px;letter-spacing:.06em;text-transform:uppercase;margin:6px 0 12px">Três achados</h3>
+    <div class="find">
+      <div class="card"><div class="n">0,88</div><h4>Quem perde a janela não volta</h4><p>Produtos por cliente de quem acessa o app depois da 1ª semana (490 clientes), quase igual a quem nunca acessou (0,73). A ativação se decide de D0 a D7.</p></div>
+      <div class="card"><div class="n">20% a 43%</div><h4>O problema está nos canais não digitais</h4><p>Ativação em Agência (20%), Parceiro (30%) e Indicação (43%), contra 87% no App Próprio. O efeito do login aparece em todas as faixas de renda (+0,7 produto).</p></div>
+      <div class="card"><div class="n">~12</div><h4>Mais mensagem não vira produto</h4><p>Todos recebem ~12 comunicações. Entre não ativados, quem recebe 0–5 tem 16% com 2+ produtos; quem recebe 16–20, 15%. A mensagem engaja, mas não leva a uma ação.</p></div>
+    </div>
+    <div class="card funnel">
+      <h3>Funil da jornada</h3>
+      <div class="bars">
+        <div class="br"><span>Entraram na base</span><div class="t"><span class="g" style="width:100%">3.600</span></div><small>100%</small></div>
+        <div class="br"><span>Acessaram o app</span><div class="t"><span class="g" style="width:71.7%">2.581</span></div><small>71,7%</small></div>
+        <div class="br"><span>Login D0–D7</span><div class="t"><span style="width:55.7%">2.007</span></div><small>55,7% · perde 1.593</small></div>
+        <div class="br"><span>Ativados com 1+ produto</span><div class="t"><span class="g" style="width:48.5%">1.747</span></div><small>87% dos ativados</small></div>
+        <div class="br"><span>Ativados com 2+ produtos</span><div class="t"><span style="width:27.6%">993</span></div><small>57% dos com 1+</small></div>
+      </div>
+      <p class="callout">Os dois vazamentos em laranja viram as duas frentes: ativação (H1) e 2º produto (H2).</p>
+    </div>
+    <div class="foot-nav"><span class="small">Próximo: onde atacar</span><button class="next" data-go="foco">Ir para Onde atacar</button></div>
+  </section>
+
+  <!-- 2 ONDE ATACAR -->
+  <section class="chap" id="foco" role="tabpanel">
+    <div class="card">
+      <p class="big1">Foco: clientes de Indicação, Parceiro e Site nos primeiros 7 dias, com uma métrica que liga ativação a valor.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Métrica norte</h3>
+        <p style="font-size:20px;font-weight:800;margin-bottom:6px">% de clientes novos com o 1º produto contratado</p>
+        <p>Liga a porta digital ao negócio: o login sozinho não gera receita (≈ R$&nbsp;0 na regressão); o valor vem dos produtos que ele destrava. Na base, 75,7% têm 1+ produto, sem recorte de prazo, porque a data de contratação não é confiável.</p>
+        <p class="small">No teste, o login até D7 é o indicador de leitura rápida; o 1º produto confirma o valor.</p>
+      </div>
+      <div class="card">
+        <h3>Onde está o espaço</h3>
+        <div class="tbl"><table>
+          <thead><tr><th>Indicação, Parceiro e Site</th><th class="n">Base</th></tr></thead>
+          <tbody>
+            <tr><td>Clientes (mar–jul/2026)</td><td class="n">1.898</td></tr>
+            <tr><td>Login D0–D7</td><td class="n">46,6%</td></tr>
+            <tr class="on"><td>Não ativaram</td><td class="n">1.013</td></tr>
+            <tr><td>Cada +8 p.p. de ativação <span class="prem">premissa do teste</span></td><td class="n">~152 clientes</td></tr>
+          </tbody>
+        </table></div>
+        <p class="small" style="margin-top:8px">152 = 1.898 × 8 p.p., no mesmo período da base.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Por que esse público, e não outro</h3>
+      <div class="grid3">
+        <div><h4>Entra no foco</h4><p>Indicação e Parceiro: menor ativação entre os canais que respondem a mensagem (quem responde loga ~20 p.p. a mais) e onde ativar vale mais (+R$&nbsp;32 e +R$&nbsp;34 por cliente).</p></div>
+        <div><h4>Fica fora: Agência</h4><p>41% são aposentados, que ativam 15%. O problema é de jornada, não de mensagem: vira piloto assistido e proposta de jornada simplificada para Produto.</p></div>
+        <div><h4>Fica fora: App Próprio</h4><p>Já ativa 87%. O espaço de ganho é pequeno.</p></div>
+      </div>
+      <p class="callout b">O público é definido pelo comportamento (não fez login), e não pela etapa da jornada: 263 dos 763 clientes em “Cadastro” já têm produto.</p>
+    </div>
+    <div class="foot-nav"><button class="next ghost" data-go="diagnostico">Voltar</button><button class="next" data-go="hipoteses">Ir para Hipóteses</button></div>
+  </section>
+
+  <!-- 3 HIPÓTESES -->
+  <section class="chap" id="hipoteses" role="tabpanel">
+    <div class="card">
+      <p class="big1">Uma aposta principal, um quick win em paralelo e um backlog priorizado.</p>
+      <p class="small">Priorização por ICE (impacto × confiança × facilidade, notas de 1 a 5). A H2 tem ICE maior (80) por ser fácil; a H1 (45) tem o maior impacto e responde à pergunta do case. O ICE ordena a execução, não a importância.</p>
+    </div>
+    <div class="card">
+      <div class="hx">
+        <div class="hy"><div class="lb">H1 · Aposta principal</div><p>Se os clientes novos de Indicação, Parceiro e Site receberem uma régua de onboarding que os leva a se cadastrar no app e a contratar o 1º produto, o login de D0 a D7 e a contratação aumentam.</p></div>
+        <div class="ar" aria-hidden="true">→</div>
+        <div class="ac"><div class="lb">Ação</div><p>Boas-vindas em D0 e lembretes em D2, D4 e D7, uma ação por mensagem; no 1º login, o in-app conduz ao 1º produto. Teste: controle x SMS x WhatsApp.</p><p style="margin-top:6px"><a class="next" style="display:inline-block;padding:6px 14px;font-size:14px;text-decoration:none" data-go="experimento" href="#experimento">Ver o desenho</a></p></div>
+        <div class="ar" aria-hidden="true">→</div>
+        <div class="ms"><div class="lb">Como vamos medir</div><ul><li><b>Primária:</b> % de login até D7</li><li><b>Valor:</b> % com 1º produto e originação por produto</li><li><b>Custo:</b> CAC da ativação</li><li><b>Guardrails:</b> opt-out e bloqueio</li></ul></div>
+        <div class="meta"><span><b>Público:</b> 1.013 não ativados de Indicação, Parceiro e Site</span><span><b>Times:</b> CRM, Produto/App, Dados</span></div>
+      </div>
+      <div class="hx">
+        <div class="hy"><div class="lb">H2 · Quick win</div><p>Se os ativados com 0–1 produto receberem a próxima melhor oferta, a contratação do 2º produto aumenta.</p></div>
+        <div class="ar" aria-hidden="true">→</div>
+        <div class="ac"><div class="lb">Ação</div><p>Push, banner e in-app, sem custo. Teste: controle x conta investimento x seguro. A conta é o caminho natural (61% depois do cartão); o seguro vale mais (R$&nbsp;66 x R$&nbsp;39).</p></div>
+        <div class="ar" aria-hidden="true">→</div>
+        <div class="ms"><div class="lb">Como vamos medir</div><ul><li><b>Primária:</b> receita potencial a mais por tratado</li><li><b>Valor:</b> conversão em conta e em seguro</li><li><b>Guardrails:</b> canibalização e opt-out de push</li></ul></div>
+        <div class="meta"><span><b>Público:</b> 1.014 ativados com 0–1 produto</span><span><b>Times:</b> CRM, Produto, Seguros e Investimentos</span></div>
+      </div>
+      <h4 style="margin-top:18px">Backlog</h4>
+      <div class="tbl"><table>
+        <thead><tr><th></th><th>Hipótese</th><th>Depende de</th></tr></thead>
+        <tbody>
+          <tr><td><b>H3</b></td><td>Menos mensagens, disparadas por comportamento, mantêm o resultado com menos custo</td><td>CRM e Dados</td></tr>
+          <tr><td><b>H4</b></td><td>Ajuda no 1º acesso aumenta a ativação dos aposentados da Agência</td><td>Agências e Produto/UX</td></tr>
+          <tr><td><b>H5</b></td><td>Retomada em até 24h aumenta a conversão de quem abandona a contratação</td><td>Implementar o evento de abandono</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="foot-nav"><button class="next ghost" data-go="foco">Voltar</button><button class="next" data-go="experimento">Ir para o Experimento da H1</button></div>
+  </section>
+
+  <!-- 4 EXPERIMENTO -->
+  <section class="chap" id="experimento" role="tabpanel">
+    <div class="card">
+      <p class="big1">Três grupos sorteados na entrada; a única diferença entre eles é a jornada.</p>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="k">Grupos</div><div class="v">3</div><div class="s">controle, SMS e WhatsApp, 1/3 cada</div></div>
+      <div class="kpi"><div class="k">Clientes por grupo</div><div class="v">612</div><div class="s">para ver +8 p.p. no login (~47% → ~55%) <span class="prem">premissa</span></div></div>
+      <div class="kpi"><div class="k">Duração</div><div class="v">~21 sem.</div><div class="s">no ritmo da base (~380 clientes/mês nesses canais)</div></div>
+      <div class="kpi"><div class="k">Custo WhatsApp</div><div class="v o">R$&nbsp;1,20</div><div class="s">por cliente: 3 × R$&nbsp;0,40 <span class="prem">premissa</span></div></div>
+    </div>
+    <div class="card">
+      <h3>A jornada nova: o que queremos que o cliente faça</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Quando</th><th>Quem recebe</th><th>Ação que queremos</th></tr></thead>
+        <tbody>
+          <tr><td><b>D0</b></td><td>Todos dos grupos B e C (SMS)</td><td><b>Baixar o app e fazer o cadastro</b></td></tr>
+          <tr><td><b>D2</b></td><td>Só quem não fez login (B: SMS · C: WhatsApp)</td><td><b>Fazer o 1º login e ativar o cartão virtual</b></td></tr>
+          <tr><td><b>D4</b></td><td>Só quem não fez login</td><td><b>Fazer o 1º login e o 1º Pix</b></td></tr>
+          <tr><td><b>D7</b></td><td>Só quem não fez login</td><td><b>Fazer o 1º login</b> (métrica primária)</td></tr>
+          <tr><td><b>Após o 1º login</b></td><td>Quem entrou sem produto (in-app)</td><td><b>Contratar o 1º produto</b></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Duas mensagens da régua</h3>
+        <div class="msgs" style="grid-template-columns:minmax(0,1fr)">
+          <div class="msg"><div class="c">SMS · D0 · boas-vindas</div>[Marca]: boas-vindas! Sua conta está pronta. Baixe o app e faça seu cadastro em 2 minutos: [link]</div>
+          <div class="msg wa"><div class="c">WhatsApp · D2</div>Oi, {nome}! Sua conta na [Marca] já está pronta. Em 1 minuto você ativa seu cartão virtual e já pode usar nas compras online.<br><span class="btn">Ativar cartão virtual</span><span class="btn">Falar com alguém</span></div>
+        </div>
+        <p class="small" style="margin-top:10px">Mesmo texto no SMS e no WhatsApp: o teste mede o canal. Todas as copys no apêndice.</p>
+      </div>
+      <div class="card">
+        <h3>Plano para aprender rápido</h3>
+        <ul class="plain" style="font-size:15.5px">
+          <li><b>Semana 1:</b> H2 no ar, sem custo, com quem já ativou.</li>
+          <li><b>Se o volume for o da base:</b> H1 começa com controle x SMS, que precisa de 1.224 clientes (~14 semanas no ritmo da base); o WhatsApp entra na 2ª onda.</li>
+          <li><b>Durante o teste:</b> entrega, opt-out e cadastro no app são acompanhados para parar cedo se houver problema operacional. O vencedor só é declarado na leitura final.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-nav"><button class="next ghost" data-go="hipoteses">Voltar</button><button class="next" data-go="comunicacao">Ir para Leitura da comunicação</button></div>
+  </section>
+
+  <!-- 5 COMUNICAÇÃO -->
+  <section class="chap" id="comunicacao" role="tabpanel">
+    <div class="card">
+      <p class="big1">Abertura e clique diagnosticam; a decisão é pelo login e pelo valor.</p>
+      <p class="small">Hoje o CTR é 8% entre não ativados e 19% entre ativados, com o mesmo volume de mensagens.</p>
+    </div>
+    <div class="card">
+      <h3>Onde a mensagem quebra e o que eu mexo</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Etapa</th><th>Métrica</th><th>Se estiver baixa</th><th>O que mexo</th></tr></thead>
+        <tbody>
+          <tr><td>Entrega</td><td>% entregue</td><td>Telefone ou opt-in ruins</td><td>Qualidade de cadastro; canal alternativo</td></tr>
+          <tr><td>Leitura</td><td>% lida / aberta</td><td>Remetente, horário, prévia</td><td>Horário de envio, 1ª linha</td></tr>
+          <tr><td>Clique</td><td>CTR</td><td>Leu e não clicou: copy ou oferta fracas</td><td>Benefício, CTA, personalização</td></tr>
+          <tr><td>Ação</td><td>Login / 1ª ação após o clique</td><td>Clicou e não entrou: fricção</td><td>Deep link, senha, app não instalado (Produto)</td></tr>
+          <tr><td>Valor</td><td>1º produto e receita potencial</td><td>Entrou e não contratou: ativação vazia</td><td>Acoplar a próxima melhor oferta (H2)</td></tr>
+          <tr><td>Custo</td><td>CAC da ativação; opt-out</td><td>Opt-out alto: frequência ou relevância</td><td>Reduzir toques; testar H3</td></tr>
+        </tbody>
+      </table></div>
+      <p class="callout">Um grupo pode ter CTR maior e perder em login. Se o WhatsApp clicar mais que o SMS e empatar no login, vence o SMS, porque não tem custo.</p>
+    </div>
+    <div class="card">
+      <h3>WhatsApp: quando se paga</h3>
+      <p>R$&nbsp;1,20 por cliente ÷ ~R$&nbsp;28 de receita potencial por ativado = o WhatsApp precisa de <b>+4,3 p.p.</b> de login acima do SMS. Os R$&nbsp;28 são diferença observada (teto), então 4,3 p.p. é um piso. Possibilidade de reduzir custo: templates de utilidade, com a ressalva de que a Meta pode reclassificar mensagens com tom de oferta como marketing.</p>
+    </div>
+    <div class="foot-nav"><button class="next ghost" data-go="experimento">Voltar</button><button class="next" data-go="decisao">Ir para Decisão e escala</button></div>
+  </section>
+
+  <!-- 6 DECISÃO E ESCALA -->
+  <section class="chap" id="decisao" role="tabpanel">
+    <div class="card">
+      <h3>O que faço com cada resultado</h3>
+      <div class="tbl"><table class="dec">
+        <thead><tr><th>Resultado</th><th>Leitura</th><th>Próximo passo</th></tr></thead>
+        <tbody>
+          <tr class="on"><td>SMS vence</td><td>A mensagem certa resolve, sem custo</td><td>Escalar para todos os canais não digitais</td></tr>
+          <tr class="on"><td>WhatsApp vence o SMS por ≥ 4,3 p.p.</td><td>O canal pago se paga</td><td>WhatsApp onde o valor é maior: Indicação, Parceiro, renda alta</td></tr>
+          <tr><td>Login sobe, produto não</td><td>Ativação vazia</td><td>Acoplar a H2 logo após o login</td></tr>
+          <tr><td>Neutro</td><td>Não é lembrete, é fricção</td><td>Levar a Produto; testar outra 1ª ação</td></tr>
+          <tr><td>Negativo</td><td>Login cai ou opt-out sobe</td><td>Desligar e testar a H3</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3>Como escalo e com quem</h3>
+      <div class="flow" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+        <div><b>Rollout</b><span>10% → 50% → 100%, com holdout permanente de 5–10%.</span></div>
+        <div><b>2ª onda</b><span>Copy por perfil, WhatsApp ou RCS onde se paga, regra de próxima melhor oferta.</span></div>
+        <div><b>Eventos a implementar</b><span>Data do 1º login e início e abandono de contratação, com Engenharia e Dados.</span></div>
+        <div><b>Ritual</b><span>Quinzenal com CRM, Produto e Dados: resultados, backlog por ICE, próximo teste.</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Critério de vitória</h3>
+      <ul class="hl">
+        <li><span class="ic ok">✔</span><span class="ok">Lift significativo no login até D7 contra o controle (significância de 5%, poder de 80%).</span></li>
+        <li><span class="ic ok">✔</span><span class="ok">% com 1º produto não piora e guardrails ficam estáveis.</span></li>
+        <li><span class="ic warn">▲</span><span class="warn">WhatsApp só vence se superar o SMS em pelo menos 4,3 p.p.</span></li>
+      </ul>
+      <p class="callout g" style="margin-top:14px">Os dados mostram onde está o valor, mas não provam causa. Por isso a resposta é uma esteira: começo pelo maior gap com custo zero, deixo o canal pago provar que se paga e implemento os eventos que faltam.</p>
+    </div>
+    <div class="foot-nav"><button class="next ghost" data-go="comunicacao">Voltar</button><button class="next" data-go="apendice">Apêndice</button></div>
+  </section>
+
+  <!-- APÊNDICE -->
+  <section class="chap" id="apendice" role="tabpanel">
+    <div class="card"><p class="big1" style="font-size:19px">Apêndice: detalhes para abrir se a banca perguntar.</p></div>
+
+    <details class="ap"><summary>Tratamento e inconsistências</summary><div class="in"><div class="tbl"><table>
+      <thead><tr><th>O que encontrei</th><th class="n">Registros</th><th>Como tratei</th></tr></thead>
+      <tbody>
+        <tr><td>Região com grafias diferentes (“SUDESTE”, “sul”, “Nordeste ”)</td><td class="n">62</td><td>Padronizado</td></tr>
+        <tr><td>Perfil / renda / engajamento em branco</td><td class="n">55 / 217 / 104</td><td>“Não informado”; engajamento mantido em branco</td></tr>
+        <tr><td>ativacao_digital diverge de login_primeiros_dias</td><td class="n">5</td><td>Login D0–D7 como definição de ativação</td></tr>
+        <tr><td>Acessou o app = Sim, com 0 acessos e sem último acesso</td><td class="n">86</td><td>Fora dos públicos de teste</td></tr>
+        <tr><td>Etapa x comportamento: “Cadastro” com produto / ativados em “Cadastro” / “Fidelizado” com 0–1 produto</td><td class="n">263 / 15 / 47</td><td>Etapa não usada para público</td></tr>
+        <tr><td>Engajamento &gt; 0 para quem nunca acessou</td><td class="n">566</td><td>Só estratificação na H1</td></tr>
+        <tr><td>Utilização &gt; 0 sem nenhum dos 3 produtos (ambíguo: “produtos/serviços”)</td><td class="n">871</td><td>Só qualidade da conversão na H2</td></tr>
+        <tr><td>Usa “Investimentos” sem conta / “Cartão Virtual” sem cartão</td><td class="n">219 / 241</td><td>Sinal de interesse a validar</td></tr>
+        <tr><td>Perfil x idade implausível</td><td class="n">91</td><td>Leitura por perfil com cautela</td></tr>
+        <tr><td>Produtos iguais com 7 ou 150 dias de casa</td><td class="n">—</td><td>Não uso tempo até contratar</td></tr>
+      </tbody></table></div></div></details>
+
+    <details class="ap"><summary>Recortes: canal, renda, perfil e idade</summary><div class="in"><div class="grid2">
+      <div class="tbl"><table>
+        <thead><tr><th>Canal</th><th class="n">Login D0–D7</th><th class="n">Respondeu</th><th class="n">Não respondeu</th><th class="n">Receita a mais se ativa</th></tr></thead>
+        <tbody>
+          <tr><td>App Próprio</td><td class="n">87%</td><td class="n">93%</td><td class="n">83%</td><td class="n">+R$&nbsp;10</td></tr>
+          <tr><td>Site</td><td class="n">61%</td><td class="n">78%</td><td class="n">54%</td><td class="n">+R$&nbsp;17</td></tr>
+          <tr><td>Indicação</td><td class="n">43%</td><td class="n">58%</td><td class="n">37%</td><td class="n">+R$&nbsp;32</td></tr>
+          <tr><td>Parceiro</td><td class="n">30%</td><td class="n">47%</td><td class="n">25%</td><td class="n">+R$&nbsp;34</td></tr>
+          <tr><td>Agência</td><td class="n">20%</td><td class="n">39%</td><td class="n">14%</td><td class="n">+R$&nbsp;18</td></tr>
+        </tbody></table></div>
+      <div class="tbl"><table>
+        <thead><tr><th>Renda</th><th class="n">Produtos, não ativado</th><th class="n">Ativado</th><th class="n">Diferença</th></tr></thead>
+        <tbody>
+          <tr><td>Até R$&nbsp;2.000</td><td class="n">0,56</td><td class="n">1,31</td><td class="n">+0,75</td></tr>
+          <tr><td>R$&nbsp;2.001–4.000</td><td class="n">0,65</td><td class="n">1,45</td><td class="n">+0,80</td></tr>
+          <tr><td>R$&nbsp;4.001–8.000</td><td class="n">0,78</td><td class="n">1,48</td><td class="n">+0,70</td></tr>
+          <tr><td>R$&nbsp;8.001–15.000</td><td class="n">0,95</td><td class="n">1,62</td><td class="n">+0,67</td></tr>
+          <tr><td>Acima de R$&nbsp;15.000</td><td class="n">1,05</td><td class="n">1,71</td><td class="n">+0,66</td></tr>
+        </tbody></table></div>
+    </div>
+    <p class="small" style="margin-top:12px">Ativação por perfil: Universitário 77%, Jovem Digital 73%, Autônomo 54%, Família Estabelecida 47%, Aposentado 28%. Por idade: 71% em 18–24 e 32% em 65+. Região: 50% a 61%. Diferença de receita potencial ponderada por renda: ~R$&nbsp;28 por ativado (teto, não efeito causal).</p></div></details>
+
+    <details class="ap"><summary>Comunicação e produtos</summary><div class="in"><div class="grid2">
+      <div class="tbl"><table>
+        <thead><tr><th>Não ativados: recebidas</th><th class="n">Clientes</th><th class="n">CTR</th><th class="n">Respondeu</th><th class="n">2+ produtos</th></tr></thead>
+        <tbody>
+          <tr><td>0–5</td><td class="n">180</td><td class="n">6,3%</td><td class="n">7,8%</td><td class="n">15,6%</td></tr>
+          <tr><td>6–10</td><td class="n">474</td><td class="n">9,1%</td><td class="n">11,6%</td><td class="n">15,0%</td></tr>
+          <tr><td>11–15</td><td class="n">474</td><td class="n">7,3%</td><td class="n">21,9%</td><td class="n">17,9%</td></tr>
+          <tr><td>16–20</td><td class="n">465</td><td class="n">7,6%</td><td class="n">25,6%</td><td class="n">15,3%</td></tr>
+        </tbody></table></div>
+      <div class="tbl"><table>
+        <thead><tr><th>Produto</th><th class="n">Receita pot. por cliente (regressão)</th></tr></thead>
+        <tbody>
+          <tr><td>Seguro</td><td class="n">R$&nbsp;66</td></tr>
+          <tr><td>Cartão</td><td class="n">R$&nbsp;39</td></tr>
+          <tr><td>Conta investimento</td><td class="n">R$&nbsp;39</td></tr>
+          <tr><td>Login sozinho</td><td class="n">≈ 0</td></tr>
+        </tbody></table>
+        <p class="small" style="margin-top:8px">Ativados só com cartão (309): R$&nbsp;98; + conta R$&nbsp;123; + seguro R$&nbsp;201. Depois do cartão, o 2º produto foi conta em 61% dos casos e seguro em 39%.</p></div>
+    </div></div></details>
+
+    <details class="ap"><summary>H2: teste de próxima melhor oferta</summary><div class="in"><div class="grid2">
+      <div><div class="tbl"><table>
+        <thead><tr><th>Grupo</th><th>Oferta</th><th class="n">Conversão <span class="prem">premissa</span></th><th class="n">Receita por tratado</th></tr></thead>
+        <tbody>
+          <tr><td>A</td><td>Comunicação atual</td><td class="n">—</td><td class="n">—</td></tr>
+          <tr><td>B</td><td>Conta investimento</td><td class="n">10%</td><td class="n">R$&nbsp;2,48</td></tr>
+          <tr><td>C</td><td>Seguro</td><td class="n">5%</td><td class="n">R$&nbsp;5,15</td></tr>
+        </tbody></table></div>
+        <p class="small" style="margin-top:8px">Com a conta a 10%, o seguro empata em receita a partir de 2,4% de conversão. Ganho por conversão vem da base: +R$&nbsp;25 (conta) e +R$&nbsp;103 (seguro) sobre quem tem só cartão.</p></div>
+      <div class="msgs" style="grid-template-columns:minmax(0,1fr)">
+        <div class="msg"><div class="c">Push · B</div><b>Seu dinheiro pode render</b><br>Abra sua conta investimento em 2 minutos, direto no app.</div>
+        <div class="msg"><div class="c">Push · C</div><b>Proteção para quem depende de você</b><br>Veja quanto custa seu seguro de vida. Leva 1 minuto.</div>
+      </div>
+    </div></div></details>
+
+    <details class="ap"><summary>Todas as copys da régua da H1</summary><div class="in"><div class="msgs">
+      <div class="msg"><div class="c">SMS · D2</div>[Marca]: sua conta está pronta. Ative seu cartão virtual em 1 minuto e já use nas compras online: [link]</div>
+      <div class="msg"><div class="c">SMS · D4</div>[Marca]: que tal fazer seu 1º Pix pelo app? Leva menos de 1 minuto: [link]</div>
+      <div class="msg"><div class="c">SMS · D7</div>[Marca]: falta só entrar no app para liberar seu cartão, Pix e conta. Seu acesso: [link]</div>
+      <div class="msg"><div class="c">In-app · 1º login</div><b>Comece por aqui</b><br>Ative seu cartão virtual e use hoje mesmo.<br><span class="btn">Ativar cartão</span></div>
+      <div class="msg wa"><div class="c">WhatsApp · D4</div>Oi, {nome}! Que tal fazer seu primeiro Pix pelo app? É rápido: leva menos de 1 minuto.<br><span class="btn">Fazer meu 1º Pix</span><span class="btn">Falar com alguém</span></div>
+      <div class="msg wa"><div class="c">WhatsApp · D7</div>Oi, {nome}! Seu cartão virtual, o Pix e a conta já estão liberados. Falta só entrar no app pela primeira vez.<br><span class="btn">Entrar no app</span><span class="btn">Preciso de ajuda</span></div>
+    </div><p class="small" style="margin-top:8px">Copys ilustrativas, SMS abaixo de 160 caracteres; benefícios a validar com produto e jurídico.</p></div></details>
+
+    <details class="ap"><summary>Amostra, ICE e painel de métricas</summary><div class="in">
+      <p><b>Amostra:</b> com ~47% de login hoje nesses canais, detectar +8 p.p. com 95% de confiança e 80% de poder exige 612 clientes por grupo. Análise por intenção de tratar: comparo todos os sorteados.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>ICE</th><th>O que mede</th><th>Nota 1</th><th>Nota 5</th></tr></thead>
+        <tbody>
+          <tr><td><b>Impacto</b></td><td>Clientes afetados × valor em jogo</td><td>Público pequeno ou pouco valor</td><td>Maior gap, muitos clientes, alto valor</td></tr>
+          <tr><td><b>Confiança</b></td><td>Quanto a base sustenta</td><td>Sem sinal nos dados</td><td>Sinal forte em vários recortes</td></tr>
+          <tr><td><b>Facilidade</b></td><td>Custo e dependência de outras áreas</td><td>Custo alto, precisa de desenvolvimento</td><td>Sem custo, só CRM</td></tr>
+        </tbody></table></div>
+      <p class="small" style="margin-top:10px">ICE: H1 5×3×3 = 45 · H2 4×4×5 = 80 · H3 3×3×4 = 36 · H4 3×2×2 = 12 · H5 depende de evento.</p>
+      <p style="margin-top:10px"><b>Painel:</b> ativação (cadastro, login D7, 1ª ação) · engajamento (entrega, leitura, CTR, resposta) · originação por produto · receita potencial por tratado · custo e CAC da ativação · saúde da base (opt-out, bloqueio, reclamações). O CAC por canal de entrada não está na base.</p>
+    </div></details>
+
+    <div class="foot-nav"><button class="next ghost" data-go="decisao">Voltar</button><button class="next" data-go="diagnostico">Voltar ao início</button></div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var ids=['diagnostico','foco','hipoteses','experimento','comunicacao','decisao','apendice'];
+  var pills=[].slice.call(document.querySelectorAll('.pill'));
+  function show(id){
+    if(ids.indexOf(id)<0)id=ids[0];
+    ids.forEach(function(x){document.getElementById(x).classList.toggle('show',x===id)});
+    pills.forEach(function(p){p.setAttribute('aria-selected',p.dataset.t===id?'true':'false')});
+    try{history.replaceState(null,'','#'+id)}catch(e){}
+    window.scrollTo(0,0);
+  }
+  document.addEventListener('click',function(e){
+    var t=e.target.closest('[data-t],[data-go]');if(!t)return;
+    e.preventDefault();show(t.dataset.t||t.dataset.go);
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.target.closest('input,textarea,summary'))return;
+    var cur=ids.indexOf((document.querySelector('.chap.show')||{}).id);
+    if(e.key==='ArrowRight'&&cur<ids.length-1)show(ids[cur+1]);
+    if(e.key==='ArrowLeft'&&cur>0)show(ids[cur-1]);
+  });
+  show((location.hash||'').slice(1));
+})();
+</script>
+</body>
+</html>
